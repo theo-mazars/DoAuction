@@ -1,0 +1,38 @@
+{
+  "name": "do-auction",
+  "version": "1.0.0",
+  "description": "DarkOrbit auctions scanner",
+  "main": "index.js",
+  "repository": "https://github.com/theo-mazars/DoAuction",
+  "author": "Theo Mazars",
+  "license": "GPL-3.0",
+  "private": true,
+  "dependencies": {
+    "@prisma/cli": "^2.19.0",
+    "@prisma/client": "2.19.0",
+    "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.5",
+    "dotenv": "^8.2.0",
+    "follow-redirects": "^1.13.3",
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.1",
+    "node-wget": "^0.4.3",
+    "puppeteer": "^8.0.0",
+    "puppeteer-extra": "^3.1.18",
+    "puppeteer-extra-plugin-recaptcha": "^3.3.7",
+    "qs": "^6.10.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6",
+    "unirest": "^0.6.0",
+    "url": "^0.11.0",
+    "user-agents": "^1.0.600",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "devDependencies": {
+    "prisma": "2.19.0"
+  }
+}

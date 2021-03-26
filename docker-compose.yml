@@ -1,0 +1,32 @@
+version: "3"
+services:
+  scraper:
+    build: ./scraper
+    container_name: do-scraper
+    depends_on:
+      - database
+    networks:
+      - back
+  database:
+    image: "mysql:8.0"
+    restart: always
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}"
+      - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
+    volumes:
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "db_data:/var/lib/mysql"
+    networks:
+      - back
+volumes:
+  db_data: null
+networks:
+  back: null

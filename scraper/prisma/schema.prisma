@@ -1,0 +1,57 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["createMany"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model bids {
+  id      String   @id @db.VarChar(255)
+  session Int?
+  object  String?  @db.VarChar(255)
+  owner   String?  @db.VarChar(255)
+  price   BigInt?
+  objects objects? @relation(fields: [object], references: [tag])
+  history history? @relation(fields: [session], references: [id])
+
+  @@index([session], name: "bids_history_id_fk")
+  @@index([object], name: "bids_objects_tag_fk")
+}
+
+model history {
+  id         Int           @id @default(autoincrement())
+  auction_id String?       @db.VarChar(255)
+  type       history_type?
+  time       DateTime      @db.DateTime(0)
+  server     String?       @db.VarChar(5)
+  servers    servers?      @relation(fields: [server], references: [tag])
+  bids       bids[]
+
+  @@index([server], name: "history_servers_tag_fk")
+}
+
+model objects {
+  id    Int     @id @default(autoincrement())
+  tag   String  @unique @db.VarChar(255)
+  name  String? @db.VarChar(255)
+  image String? @db.VarChar(255)
+  bids  bids[]
+}
+
+model servers {
+  id      Int       @id @default(autoincrement())
+  do_id   Int?
+  tag     String?   @unique @db.VarChar(5)
+  name    String?   @db.VarChar(100)
+  tab     String?   @db.VarChar(100)
+  history history[]
+}
+
+enum history_type {
+  hour
+  day
+  week
+}
