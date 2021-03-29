@@ -7,6 +7,24 @@ services:
       - database
     networks:
       - back
+    environment:
+      - "USERNAME=${USERNAME}"
+      - "PASSWORD=${PASSWORD}"
+      - "DATABASE_URL=${DATABASE_URL}"
+  web-server:
+    build: ./web-server
+    container_name: do-web-server
+    depends_on:
+      - database
+    networks:
+      - back
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    environment:
+      - "API_URL=${API_URL}"
+      - "DATABASE_URL=${DATABASE_URL}"
   database:
     image: "mysql:8.0"
     restart: always
@@ -15,10 +33,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - "MYSQL_USER=${MYSQL_USER}"
+      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
+      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
       - "MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_ALLOW_EMPTY_PASSWORD}"
       - "MYSQL_RANDOM_ROOT_PASSWORD=${MYSQL_RANDOM_ROOT_PASSWORD}"
     volumes:
@@ -26,6 +44,7 @@ services:
       - "db_data:/var/lib/mysql"
     networks:
       - back
+
 volumes:
   db_data: null
 networks:

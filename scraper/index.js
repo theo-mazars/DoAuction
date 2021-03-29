@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const { PrismaClient } = require("@prisma/client");
-const config = require("dotenv").config().parsed;
+// const config = require("dotenv").config().parsed;
 
 const { URL } = require("url");
 
@@ -57,9 +57,12 @@ const scrapServer = async (page, servers, i) => {
       clickCount: 4,
     });
     setTimeout(async () => {
-      await page.click(`#serverSelection_${servers[i + 1].tab}_tab`, {
-        clickCount: 1,
-      });
+      await page
+        .click(`#serverSelection_${servers[i + 1].tab}_tab`, {
+          clickCount: 1,
+        })
+        .catch((err) => console.error(err));
+
       setTimeout(async () => {
         console.log(`🚢 Navigating to the server ${servers[i + 1].tag}`);
         await page.click(`#serverSelection_ini_${servers[i + 1].do_id}`, {
@@ -76,32 +79,43 @@ const scrapServer = async (page, servers, i) => {
   return;
 };
 
-(async function main() {
+const scrap = async () => {
   const servers = await prisma.servers.findMany();
   console.log("📃 Getting server list");
 
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
-    timeout: 120000,
+    timeout: 0,
     args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
   console.log("🚢 Navigating to https://darkorbit.com");
-  await page.goto("https://www.darkorbit.com");
+  const navigation = await page
+    .goto("https://www.darkorbit.com", {
+      waitUntil: "load",
+      timeout: 0,
+    })
+    .catch(() => {
+      console.log(
+        `❌ Unable to load https://www.darkorbit.com\n🔃 Retrying...`
+      );
+      main();
+    });
+
+  if (!navigation) return;
 
   console.log("➕ Filling username and password");
-  await page.type("#bgcdw_login_form_username", config.USERNAME);
-  await page.type("#bgcdw_login_form_password", config.PASSWORD);
+  await page.type("#bgcdw_login_form_username", process.env.USERNAME);
+  await page.type("#bgcdw_login_form_password", process.env.PASSWORD);
 
   console.log("👨‍💻 Log the user in");
   await Promise.all([
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
     await page
       .click(".css-flk0bs", { delay: "500", clickCount: 1 })
       .catch(() => {}),
     await page.click(".bgcdw_button.bgcdw_login_form_login"),
-    page.waitForNavigation({ waitUntil: "networkidle0" }),
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 0 }),
   ]);
   console.log("🏴‍☠ We're in captain!");
 
@@ -111,6 +125,13 @@ const scrapServer = async (page, servers, i) => {
 
   let i = 0;
   await scrapServer(page, servers, i);
-})();
+};
 
-console.log("🏁 Here we go");
+(function main() {
+  console.log("🏁 Here we go");
+  scrap();
+  setInterval(() => {
+    console.log("🏁 Here we go");
+    scrap();
+  }, 3 * 60 * 60 * 1000);
+})();

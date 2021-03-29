@@ -1,4 +1,5 @@
 # dependencies
+node_modules
 */node_modules
 */.pnp
 .pnp.js
@@ -11,6 +12,7 @@ package-lock.json
 # misc
 .DS_Store
 *.pem
+.next
 
 # debug
 npm-debug.log*
