@@ -2,45 +2,48 @@ create table objects
 (
     id        int auto_increment
         primary key,
-    tag       varchar(255)                 not null,
-    name      varchar(255)                 null,
-    image     varchar(255)                 null,
-    frequency enum ('day', 'hour', 'week') not null,
+    tag       varchar(255) charset utf8mb4                 not null,
+    name      varchar(255) charset utf8mb4                 null,
+    image     varchar(255) charset utf8mb4                 null,
+    frequency enum ('day', 'hour', 'week') charset utf8mb4 not null,
     constraint objects_tag_uindex
         unique (tag)
-);
+)
+    charset = utf8;
 
 create table servers
 (
     id    int auto_increment
         primary key,
-    do_id int          null,
-    tag   varchar(5)   null,
-    name  varchar(100) null,
-    tab   varchar(100) null,
+    do_id int                          null,
+    tag   varchar(5) charset utf8mb4   null,
+    name  varchar(100) charset utf8mb4 null,
+    tab   varchar(100) charset utf8mb4 null,
     constraint servers_tag_uindex
         unique (tag)
-);
+)
+    charset = utf8;
 
 create table history
 (
     id         int auto_increment
         primary key,
-    auction_id varchar(255)                 null,
-    type       enum ('hour', 'day', 'week') null,
-    time       datetime                     not null,
-    server     varchar(5)                   null,
+    auction_id varchar(255) charset utf8mb4                 null,
+    type       enum ('hour', 'day', 'week') charset utf8mb4 null,
+    time       datetime                                     not null,
+    server     varchar(5) charset utf8mb4                   null,
     constraint history_servers_tag_fk
         foreign key (server) references servers (tag)
-);
+)
+    charset = utf8;
 
 create table bids
 (
-    id      varchar(255) not null,
-    session int          null,
-    object  varchar(255) null,
-    owner   varchar(255) null,
-    price   bigint       null,
+    id      varchar(255) charset utf8mb4 not null,
+    session int                          null,
+    object  varchar(255) charset utf8mb4 null,
+    owner   varchar(255) charset utf8mb4 null,
+    price   bigint                       null,
     constraint bids_id_uindex
         unique (id),
     constraint bids_history_id_fk
@@ -49,7 +52,8 @@ create table bids
     constraint bids_objects_tag_fk
         foreign key (object) references objects (tag)
             on update cascade on delete cascade
-);
+)
+    charset = utf8;
 
 alter table bids
     add primary key (id);

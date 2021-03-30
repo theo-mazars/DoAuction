@@ -67,6 +67,7 @@ export default function Home({ items, servers }) {
       <Head>
         <title>DoAuction - Home</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta charset="UTF-8" />
       </Head>
 
       <main className={styles.main}>
