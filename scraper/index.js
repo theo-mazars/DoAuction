@@ -14,6 +14,7 @@ const useFirstServer = async (page, serverId) =>
     const url = new URL(page.url());
     await page.goto(`${url}/indexInternal.es?action=internalAuction`, {
       waitUntil: "networkidle0",
+      timeout: 0,
     });
     await page.click(".css-flk0bs", { clickCount: 4 }).catch(() => {});
     await page.click("#header_button_server", {
@@ -33,7 +34,7 @@ const scrapServer = async (page, servers, i) => {
   console.log(`🚢 Navigating to auction page`);
   await page.goto(
     `https://${server}.darkorbit.com/indexInternal.es?action=internalAuction`,
-    { waitUntil: "networkidle0" }
+    { waitUntil: "networkidle0", timeout: 0 }
   );
   console.log(`⚓ Just arrived in auction page`);
 
@@ -41,13 +42,24 @@ const scrapServer = async (page, servers, i) => {
 
   const filters = ["hour", "day", "week"];
 
+  console.log("👀 Looking for entries in the database");
+  const entries = await prisma.history.findMany();
+
   await Promise.all(
     filters.map(async (filter) => {
       console.log(`🕷️ Scraping ${filter}s auctions`);
       const times = c(`#auction_history_selection_${filter} div.filter_item`);
       console.log("⌚ Waiting for page");
       return Promise.all(
-        times.map(async (_, time) => scrapSolds(time, server, filter, c))
+        times.map(async (_, time) =>
+          scrapSolds(
+            time,
+            server,
+            filter,
+            c,
+            entries.find((e) => e.id === time.attribs.id)
+          )
+        )
       );
     })
   );

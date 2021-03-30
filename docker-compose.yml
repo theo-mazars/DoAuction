@@ -32,6 +32,8 @@ services:
       - 3306
     ports:
       - "3306:3306"
+    cap_add:
+      - SYS_NICE
     environment:
       - "MYSQL_USER=${MYSQL_USER}"
       - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
