@@ -27,11 +27,6 @@ const scrapSolds = async (time, server, filter, c, entryExists) => {
   const id = time.attribs.id;
   const date = new Date(time.firstChild.data);
 
-  // console.log("👀 Checking for entry in the database");
-  // const entryExists = await prisma.history.findFirst({
-  //   where: { auction_id: id, server },
-  // });
-
   if (entryExists) {
     console.log("⚠️ Entry already in our database, skipping...");
     return;

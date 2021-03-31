@@ -57,7 +57,7 @@ const scrapServer = async (page, servers, i) => {
             server,
             filter,
             c,
-            entries.find((e) => e.id === time.attribs.id)
+            entries.find((e) => e.auction_id === time.attribs.id)
           )
         )
       );
