@@ -32,6 +32,8 @@ create table history
     type       enum ('hour', 'day', 'week') charset utf8mb4 null,
     time       datetime                                     not null,
     server     varchar(5) charset utf8mb4                   null,
+    constraint history_server_auction_id_type_time_uindex
+        unique (server, auction_id, type, time),
     constraint history_servers_tag_fk
         foreign key (server) references servers (tag)
 )

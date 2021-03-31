@@ -47,7 +47,8 @@ export default function Home({ items, servers }) {
   };
 
   const handleOnSelect = (item) => {
-    setConfig({ ...config, items: [...config.items, item.tag] });
+    if (!config.items.find((ci) => ci === item.tag))
+      setConfig({ ...config, items: [...config.items, item.tag] });
   };
 
   const handleOnFocus = () => {
@@ -67,7 +68,7 @@ export default function Home({ items, servers }) {
       <Head>
         <title>DoAuction - Home</title>
         <link rel="icon" href="/favicon.ico" />
-        <meta charset="UTF-8" />
+        <meta charSet="UTF-8" />
       </Head>
 
       <main className={styles.main}>

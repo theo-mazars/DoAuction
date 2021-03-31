@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "../../lib/server/prisma";
 
 const formatDate = (date) => {
   const iso = new Date(date).toISOString();
@@ -152,7 +151,7 @@ export default async (req, res) => {
     },
     take: templates[freq].take * templates[freq].series,
     orderBy: {
-      time: "asc",
+      time: "desc",
     },
     where: {
       server,
@@ -160,9 +159,11 @@ export default async (req, res) => {
     },
   });
 
+  const orderedDbExtract = dbExtract.reduce((acc, cur) => [cur, ...acc], []);
+
   const result = [
     ["Time", ...items],
-    ...templates[freq].average(items, dbExtract),
+    ...templates[freq].average(items, orderedDbExtract),
   ];
 
   res
