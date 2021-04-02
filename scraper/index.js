@@ -97,7 +97,7 @@ const scrap = async () => {
   console.log("📃 Getting server list");
 
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: null,
     timeout: 0,
     args: ["--no-sandbox"],
