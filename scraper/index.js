@@ -86,6 +86,7 @@ const scrapServer = async (page, servers, i) => {
     }, 5000);
   } else {
     console.log("✌️ Mission accomplished!");
+    page.browser().close();
   }
 
   return;
@@ -96,7 +97,7 @@ const scrap = async () => {
   console.log("📃 Getting server list");
 
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     defaultViewport: null,
     timeout: 0,
     args: ["--no-sandbox"],
